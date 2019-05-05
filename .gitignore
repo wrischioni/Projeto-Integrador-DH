@@ -1,2 +1,5 @@
 .gitsecret/keys/random_seed
 bot_help.txt
+data/venv
+data/geckodriver
+data/geckodriver.log
