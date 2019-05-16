@@ -4,7 +4,7 @@ Integration Project - Data Science Class T01 2019 - Digital House
 # Using News to Predict Stock Movements - Brazil
 
 
-Folder strucure:
+Folder structure:
 - src: Stores source code (python, R etc) which serves multiple scenarios. 
 - test: Folder to store automatic tests
 - model: Folder for storing binary (json or other format) file for local use.
