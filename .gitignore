@@ -3,3 +3,8 @@ bot_help.txt
 data/venv
 data/geckodriver
 data/geckodriver.log
+data/scraper_valor_piloto.py
+data/.idea
+.idea/
+data/.ipynb_checkpoints/
+data/__pycache__/
