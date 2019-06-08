@@ -2,17 +2,19 @@
 from requests_html import HTMLSession
 from bs4 import BeautifulSoup
 import random
+import numpy as np
 from time import sleep
 from datetime import datetime as dt
 
 
 class VALOR:
 
-    def __init__(self, n_last_page):
+    def __init__(self, n_first_page, n_last_page):
         # ~ attributes for Valor Economico web page scraping application
         self.url_home = 'https://www.valor.com.br'     # main web page
         self.url_news = 'https://www.valor.com.br/brasil/macroeconomia'     # url news type complement
         self.url_page = '?page='    # url page number complement
+        self.n_first_page = n_first_page     # first news page
         self.n_last_page = n_last_page     # last news page
         self.session = HTMLSession()
 
@@ -35,35 +37,49 @@ class VALOR:
         html_news = BeautifulSoup(html_page_raw.html.html, 'html.parser')
         body_content = html_news.find_all('div', {'class': 'node-inner'})[0]
         header_content = body_content.find_all('div', {'class': 'n-header'})[0]
-        date_time = header_content.find_all('span')[0].text
-        title = header_content.find_all('h1')[0].text
-        author_site = body_content.find_all('div', {'class': 'node-author-inner'})[0].text
-        content = body_content.find_all('div', {'id': 'node-body'})[0].text
+        try:
+            date_time = header_content.find_all('span')[0].text
+        except:
+            date_time = np.nan
+        try:
+            title = header_content.find_all('h1')[0].text
+        except:
+            title = np.nan
+        try:    
+            author_site = body_content.find_all('div', {'class': 'node-author-inner'})[0].text
+        except:
+            author_site = np.nan
+        try:
+            content = body_content.find_all('div', {'id': 'node-body'})[0].text
+        except:
+            content = np.nan
         return {'date_time': date_time,
                 'title': title,
                 'author_site': author_site,
                 'content': content}
 
     def full_extraction(self):
-
         print(f'process start at: {dt.now()}')
         print('------------------')
         all_news = []
-        for i in range(0, (self.n_last_page)):
-            if i == 0:
-                page_html = self.get_html_content()
-            else:
-                page_html = self.get_html_content(page_n=i, first=False)
+        for i in range((self.n_first_page), (self.n_last_page)):
+            try:
+                if i == 0:
+                    page_html = self.get_html_content()
+                else:
+                    page_html = self.get_html_content(page_n=i, first=False)
 
-            link_list = self.get_news_url(html=page_html)
-            print(f'{i}th-iteration: ', end='')
-            print(f'get-links completed at: {dt.now().hour:2>}:{dt.now().minute:2>} / loading content: ', end='')
+                link_list = self.get_news_url(html=page_html)
+                print(f'{i}th-iteration: ', end='')
+                print(f'get-links completed at: {dt.now().hour:2>}:{dt.now().minute:2>} / loading content: ', end='')
 
-            for link_ref in link_list:
-                news_info = self.get_news_info(link_ref)
-                all_news.append(news_info.copy())
-                print('|', end='')
-                sleep(random.uniform(0.0, 0.8))
+                for link_ref in link_list:
+                    news_info = self.get_news_info(link_ref)
+                    all_news.append(news_info.copy())
+                    print('|', end='')
+                    sleep(random.uniform(0.0, 0.8))
+            except:
+                continue
             print(f' / get-news completed at: {dt.now().hour:2>}:{dt.now().minute:2>}')
         print('------------------')
         print(f'full-job at: {dt.now()}')

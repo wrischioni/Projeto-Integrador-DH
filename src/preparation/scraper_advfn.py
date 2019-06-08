@@ -8,18 +8,18 @@ from datetime import datetime as dt
 
 class ADVFN:
 
-    def __init__(self, n_last_page):
+    def __init__(self, first_page, last_page):
         # ~ attributes for ADVFN web page scraping application
-        self.url_1th_page = 'https://br.advfn.com/jornal/economia'     # 1th url news web page
-        self.url_page = 'https://br.advfn.com/jornal/economia?paged='     # 2th+ url news web page
-        self.n_last_page = n_last_page     # news last page
+        # 1th url news web page
+        self.first_page = first_page
+        self.last_page = last_page
+        self.url_1th_page = \
+        'http://br.advfn.com/jornal/economia-e-politica/brasil?xref=economia-e-politica-landing-page'
+        self.url_page = '&paged='     # 2th+ url news web page
         self.session = HTMLSession()
 
-    def get_html_content(self, page_n=None, first=True):
-        if first is True:
-            html_raw = self.session.get(self.url_1th_page)
-        else:
-            html_raw = self.session.get(f'{self.url_page}{page_n}')
+    def get_html_content(self, page_n=None):
+        html_raw = self.session.get(f'{self.url_1th_page}{self.url_page}{page_n}')
         html_preprocessed = BeautifulSoup(html_raw.html.html, 'html.parser')
         return html_preprocessed
 
@@ -51,11 +51,8 @@ class ADVFN:
         print(f'process start at: {dt.now()}')
         print('------------------')
         all_news = []
-        for i in range(1, (self.n_last_page + 1)):
-            if i == 1:
-                page_html = self.get_html_content()
-            else:
-                page_html = self.get_html_content(page_n=i, first=False)
+        for i in range(self.first_page, (self.last_page + 1)):
+            page_html = self.get_html_content(page_n=i)
             link_list = self.get_news_url(html=page_html)
             print(f'{i}th-iteration: ', end='')
             print(f'get-links completed at: {dt.now().hour:2>}:{dt.now().minute:2>} / loading content: ', end='')

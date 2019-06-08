@@ -69,7 +69,10 @@ class INVESTING:
             print(f'{i}th-iteration: ', end='')
             print(f'get-links completed at: {dt.now().hour:2>}:{dt.now().minute:2>} / loading content: ', end='')
             for link_ref in link_list:
-                news_info = self.get_news_info(link_ref)
+                try:
+                    news_info = self.get_news_info(link_ref)
+                except:
+                    continue
                 all_news.append(news_info.copy())
                 print('|', end='')
                 sleep(random.uniform(0.0, 0.8))

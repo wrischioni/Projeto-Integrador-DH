@@ -8,3 +8,4 @@ data/.idea
 .idea/
 data/.ipynb_checkpoints/
 data/__pycache__/
+src/preparation/.ipynb_checkpoints/
